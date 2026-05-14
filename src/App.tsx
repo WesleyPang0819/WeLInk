@@ -254,7 +254,7 @@ export default function App() {
           <img 
             src="/icon-192.png" 
             alt="WeLink Logo" 
-            className="w-8 h-8 rounded-lg shadow-lg shadow-indigo-600/20 object-cover" 
+            className="w-10 h-10 md:w-11 md:h-11 rounded-lg shadow-lg shadow-indigo-600/20 object-contain" 
           />
           <h1 className="text-xl font-bold tracking-tight text-white font-display hidden xs:block">
             Link<span className="text-indigo-400">{t.title}</span>
@@ -373,7 +373,7 @@ export default function App() {
                   <img 
                     src="/icon-192.png" 
                     alt="WeLink Logo" 
-                    className="w-8 h-8 rounded-lg object-cover" 
+                    className="w-10 h-10 md:w-11 md:h-11 rounded-lg object-contain" 
                   />
                   <h1 className="text-xl font-bold tracking-tight text-white font-display">
                     Link<span className="text-indigo-400">{t.title}</span>
