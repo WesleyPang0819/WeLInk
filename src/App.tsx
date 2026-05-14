@@ -251,9 +251,11 @@ export default function App() {
           >
             <Menu size={20} />
           </button>
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/20">
-            <Vault className="w-5 h-5 text-white" />
-          </div>
+          <img 
+            src="/icon-192.png" 
+            alt="WeLink Logo" 
+            className="w-8 h-8 rounded-lg shadow-lg shadow-indigo-600/20 object-cover" 
+          />
           <h1 className="text-xl font-bold tracking-tight text-white font-display hidden xs:block">
             Link<span className="text-indigo-400">{t.title}</span>
           </h1>
@@ -368,9 +370,11 @@ export default function App() {
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-                    <Vault className="w-5 h-5 text-white" />
-                  </div>
+                  <img 
+                    src="/icon-192.png" 
+                    alt="WeLink Logo" 
+                    className="w-8 h-8 rounded-lg object-cover" 
+                  />
                   <h1 className="text-xl font-bold tracking-tight text-white font-display">
                     Link<span className="text-indigo-400">{t.title}</span>
                   </h1>
