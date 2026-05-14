@@ -346,28 +346,16 @@ export default function App() {
 
       <div className="flex flex-1 overflow-hidden relative">
         {/* Mobile Menu Backdrop */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="lg:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
-            />
-          )}
-        </AnimatePresence>
+        <div
+          onClick={() => setIsMobileMenuOpen(false)}
+          className={`lg:hidden fixed inset-0 bg-black/80 z-[100] transition-opacity duration-200 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        />
 
         {/* Mobile Sidebar */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.aside
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed inset-y-0 left-0 w-72 bg-zinc-950 border-r border-zinc-800 z-[110] p-6 flex flex-col gap-8"
-            >
+        <aside
+          style={{ willChange: 'transform', transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(-100%)' }}
+          className="lg:hidden fixed inset-y-0 left-0 w-72 bg-zinc-950 border-r border-zinc-800 z-[110] p-6 flex flex-col gap-8 transition-transform duration-200 ease-out"
+        >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <img 
@@ -397,9 +385,7 @@ export default function App() {
                   isViewingTrash={isViewingTrash}
                 />
               </div>
-            </motion.aside>
-          )}
-        </AnimatePresence>
+        </aside>
 
         {/* Sidebar Navigation (Desktop) */}
         <aside className="hidden lg:flex w-64 border-r border-zinc-800/50 bg-zinc-950 p-6 flex-col gap-8 shrink-0 overflow-y-auto custom-scrollbar">
