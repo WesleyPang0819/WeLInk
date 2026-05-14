@@ -256,7 +256,7 @@ export default function App() {
             alt="WeLink Logo" 
             className="w-10 h-10 md:w-11 md:h-11 rounded-lg shadow-lg shadow-indigo-600/20 object-contain" 
           />
-          <h1 className="text-xl font-bold tracking-tight text-white font-display hidden xs:block">
+          <h1 className="text-xl font-bold tracking-tight text-white font-display hidden lg:block">
             Link<span className="text-indigo-400">{t.title}</span>
           </h1>
         </div>
@@ -304,7 +304,7 @@ export default function App() {
             </button>
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-2 mr-2">
+          <div className="hidden md:flex items-center gap-1 sm:gap-2 mr-2">
             <button
               onClick={handleExport}
               className="p-2 text-zinc-400 hover:text-indigo-400 hover:bg-indigo-400/10 rounded-lg transition-colors"
@@ -312,7 +312,7 @@ export default function App() {
             >
               <Download size={18} />
             </button>
-            <label 
+            <label
               className="p-2 text-zinc-400 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors cursor-pointer"
               title="Import Vault Backup"
             >
@@ -331,7 +331,7 @@ export default function App() {
 
           <button
             onClick={() => signOut()}
-            className="p-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+            className="hidden md:flex p-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors"
             title="Sign Out"
           >
             <LogOut size={18} />
@@ -384,6 +384,29 @@ export default function App() {
                   language={language}
                   isViewingTrash={isViewingTrash}
                 />
+              </div>
+
+              <div className="mt-auto pt-4 border-t border-zinc-800 flex flex-col gap-1">
+                <h3 className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-2 px-2">{t.settings}</h3>
+                <button
+                  onClick={() => { handleExport(); setIsMobileMenuOpen(false); }}
+                  className="flex items-center gap-3 px-2 py-2 rounded-lg text-zinc-400 hover:text-indigo-400 hover:bg-indigo-400/10 transition-colors text-sm"
+                >
+                  <Download size={16} />
+                  {t.exportBtn}
+                </button>
+                <label className="flex items-center gap-3 px-2 py-2 rounded-lg text-zinc-400 hover:text-emerald-400 hover:bg-emerald-400/10 transition-colors text-sm cursor-pointer">
+                  <Upload size={16} />
+                  {t.importBtn}
+                  <input type="file" accept=".json" onChange={(e) => { handleImport(e); setIsMobileMenuOpen(false); }} className="hidden" />
+                </label>
+                <button
+                  onClick={() => { signOut(); setIsMobileMenuOpen(false); }}
+                  className="flex items-center gap-3 px-2 py-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors text-sm"
+                >
+                  <LogOut size={16} />
+                  {language === 'en' ? 'Sign Out' : '退出登录'}
+                </button>
               </div>
         </aside>
 
