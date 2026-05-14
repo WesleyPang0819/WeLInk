@@ -40,7 +40,7 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, folderName, onEdit, on
              {link.tag}
            </span>
         )}
-        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
+        <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity ml-auto">
           {isTrashMode ? (
             <>
               <button
