@@ -10,6 +10,7 @@ interface FolderSidebarProps {
   onDeleteFolder: (id: string) => void;
   onRenameFolder: (id: string, newName: string) => void;
   language: 'en' | 'zh';
+  isViewingTrash?: boolean;
 }
 
 export const FolderSidebar: React.FC<FolderSidebarProps> = ({
@@ -19,7 +20,8 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
   onCreateFolder,
   onDeleteFolder,
   onRenameFolder,
-  language
+  language,
+  isViewingTrash = false
 }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
@@ -30,6 +32,7 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
     allLinks: language === 'en' ? 'All Links' : '所有链接',
     newFolder: language === 'en' ? 'New Folder' : '新建文件夹',
     enterName: language === 'en' ? 'Folder name...' : '文件夹名称...',
+    trash: language === 'en' ? 'Trash' : '回收站',
   };
 
   const handleCreateSubmit = (e: React.FormEvent) => {
@@ -54,7 +57,7 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
       <button
         onClick={() => onSelectFolder(null)}
         className={`flex items-center gap-3 w-full p-2.5 rounded-xl transition-all text-sm font-medium ${
-          selectedFolderId === null
+          selectedFolderId === null && !isViewingTrash
             ? 'bg-indigo-500/10 text-indigo-400 font-bold'
             : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'
         }`}
@@ -80,7 +83,7 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
             <button
               onClick={() => onSelectFolder(folder.id)}
               className={`flex items-center gap-3 w-full p-2.5 rounded-xl transition-all text-sm font-medium ${
-                selectedFolderId === folder.id
+                selectedFolderId === folder.id && !isViewingTrash
                   ? 'bg-indigo-500/10 text-indigo-400 font-bold'
                   : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'
               }`}

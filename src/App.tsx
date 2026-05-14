@@ -25,7 +25,7 @@ export default function App() {
   const [history, setHistory] = useState<LinkEntry[]>([]);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isViewingTrash, setIsViewingTrash] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<LinkEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -106,17 +106,14 @@ export default function App() {
   };
 
   const handleDeleteFolder = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this folder? Links inside will be kept as Uncategorized.')) return;
+    if (!confirm('Are you sure you want to move this folder to the trash?')) return;
     
     try {
-      // First, update links to have no folder (or Supabase can do this if ON DELETE SET NULL is set in DB)
-      await supabase.from('link_vault_links').update({ folder_id: null }).eq('folder_id', id);
-      
-      const { error } = await supabase.from('link_vault_folders').delete().eq('id', id);
+      const now = new Date().toISOString();
+      const { error } = await supabase.from('link_vault_folders').update({ deleted_at: now }).eq('id', id);
       if (error) throw error;
       
-      setFolders(folders.filter(f => f.id !== id));
-      setLinks(links.map(l => l.folder_id === id ? { ...l, folder_id: null } : l));
+      setFolders(folders.map(f => f.id === id ? { ...f, deleted_at: now } : f));
       if (selectedFolderId === id) setSelectedFolderId(null);
     } catch (error) {
       console.error('Error deleting folder:', error);
@@ -164,14 +161,32 @@ export default function App() {
         setHistory([linkToDelete, ...history]);
       }
 
-      const { error } = await supabase.from('link_vault_links').delete().eq('id', id);
-      if (error) throw error;
-
-      setLinks(links.filter(l => l.id !== id));
+      if (isViewingTrash) {
+        // Permanent delete
+        const { error } = await supabase.from('link_vault_links').delete().eq('id', id);
+        if (error) throw error;
+        setLinks(links.filter(l => l.id !== id));
+      } else {
+        // Soft delete
+        const now = new Date().toISOString();
+        const { error } = await supabase.from('link_vault_links').update({ deleted_at: now }).eq('id', id);
+        if (error) throw error;
+        setLinks(links.map(l => l.id === id ? { ...l, deleted_at: now } : l));
+      }
     } catch (error) {
       console.error('Error deleting link:', error);
     } finally {
       setDeleteConfirmation(null);
+    }
+  };
+
+  const handleRestoreLink = async (id: string) => {
+    try {
+      const { error } = await supabase.from('link_vault_links').update({ deleted_at: null }).eq('id', id);
+      if (error) throw error;
+      setLinks(links.map(l => l.id === id ? { ...l, deleted_at: null } : l));
+    } catch (error) {
+      console.error('Error restoring link:', error);
     }
   };
 
@@ -202,8 +217,13 @@ export default function App() {
     }
   };
 
+  const activeFolders = folders.filter(f => !f.deleted_at);
+  const activeLinks = links.filter(l => !l.deleted_at);
+  const deletedLinks = links.filter(l => l.deleted_at);
+  const linksToDisplay = isViewingTrash ? deletedLinks : activeLinks;
+
   const filteredLinks = useMemo(() => {
-    return links.filter(link => {
+    return linksToDisplay.filter(link => {
       const matchesSearch = 
         link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         link.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -214,7 +234,7 @@ export default function App() {
       
       return matchesSearch && matchesFolder;
     });
-  }, [links, searchQuery, selectedFolderId]);
+  }, [linksToDisplay, searchQuery, selectedFolderId]);
 
   if (!user) {
     return <AuthScreen />;
@@ -243,8 +263,23 @@ export default function App() {
           <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} placeholder={t.searchPlaceholder} />
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-4">
-          <div className="flex items-center bg-zinc-950/50 border border-zinc-800 rounded-full p-1 h-8 sm:h-9">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <button
+              onClick={() => {
+                setIsViewingTrash(!isViewingTrash);
+                setSelectedFolderId(null);
+              }}
+              className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full transition-all ${
+                isViewingTrash 
+                  ? 'bg-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.5)]' 
+                  : 'bg-zinc-950/50 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+              }`}
+              title={language === 'en' ? 'History' : '历史记录'}
+            >
+              <History size={16} />
+            </button>
+            
+            <div className="flex items-center bg-zinc-950/50 border border-zinc-800 rounded-full p-1 h-8 sm:h-9">
             <button
               onClick={() => setLanguage('en')}
               className={`px-2 sm:px-3 h-full flex items-center text-[9px] sm:text-[10px] font-bold uppercase tracking-widest rounded-full transition-all ${
@@ -348,13 +383,14 @@ export default function App() {
               <div>
                 <h3 className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-4 px-2">Folders</h3>
                 <FolderSidebar
-                  folders={folders}
+                  folders={activeFolders}
                   selectedFolderId={selectedFolderId}
-                  onSelectFolder={(id) => { setSelectedFolderId(id); setIsMobileMenuOpen(false); }}
+                  onSelectFolder={(id) => { setSelectedFolderId(id); setIsViewingTrash(false); setIsMobileMenuOpen(false); }}
                   onCreateFolder={handleAddFolder}
                   onRenameFolder={handleRenameFolder}
                   onDeleteFolder={handleDeleteFolder}
                   language={language}
+                  isViewingTrash={isViewingTrash}
                 />
               </div>
             </motion.aside>
@@ -366,13 +402,14 @@ export default function App() {
           <div>
             <h3 className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-4 px-2">Folders</h3>
             <FolderSidebar
-              folders={folders}
+              folders={activeFolders}
               selectedFolderId={selectedFolderId}
-              onSelectFolder={setSelectedFolderId}
+              onSelectFolder={(id) => { setSelectedFolderId(id); setIsViewingTrash(false); }}
               onCreateFolder={handleAddFolder}
               onRenameFolder={handleRenameFolder}
               onDeleteFolder={handleDeleteFolder}
               language={language}
+              isViewingTrash={isViewingTrash}
             />
           </div>
 
@@ -390,16 +427,18 @@ export default function App() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto bg-[#09090b] relative p-4 sm:p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-[#09090b] relative p-4 sm:p-8 custom-scrollbar">
           {/* Subtle background glow */}
           <div className="glow-indigo top-[-100px] right-[-100px]" />
           
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 relative">
             <div>
               <h2 className="text-2xl font-bold text-white mb-1">
-                {selectedFolderId 
-                  ? folders.find(f => f.id === selectedFolderId)?.name || 'Folder'
-                  : t.savedResources}
+                {isViewingTrash 
+                  ? (language === 'zh' ? '历史记录' : 'History')
+                  : selectedFolderId 
+                    ? folders.find(f => f.id === selectedFolderId)?.name || 'Folder'
+                    : t.savedResources}
               </h2>
               <p className="text-sm text-zinc-500">{t.manageResources}</p>
             </div>
@@ -434,21 +473,26 @@ export default function App() {
                         }}
                         onDelete={(id) => setDeleteConfirmation(id)}
                         language={language}
+                        isTrashMode={isViewingTrash}
+                        onRestore={handleRestoreLink}
                       />
                     ))}
                     
+                    
                     {/* Quick Add Placeholder */}
-                    <motion.button
-                      layout
-                      onClick={() => setIsModalOpen(true)}
-                      className="border-2 border-dashed border-zinc-800 rounded-2xl flex flex-col items-center justify-center p-8 bg-zinc-900/10 hover:bg-zinc-900/20 hover:border-zinc-700 transition-all cursor-pointer group min-h-[160px]"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform group-hover:bg-zinc-700">
-                        <PlusCircle className="w-6 h-6 text-zinc-500" />
-                      </div>
-                      <p className="text-zinc-500 font-medium text-sm group-hover:text-zinc-300 transition-colors">{t.addLink}</p>
-                      <p className="text-[10px] text-zinc-700 mt-1 uppercase tracking-widest">{t.quickSave}</p>
-                    </motion.button>
+                    {!isViewingTrash && (
+                      <motion.button
+                        layout
+                        onClick={() => setIsModalOpen(true)}
+                        className="border-2 border-dashed border-zinc-800 rounded-2xl flex flex-col items-center justify-center p-8 bg-zinc-900/10 hover:bg-zinc-900/20 hover:border-zinc-700 transition-all cursor-pointer group min-h-[160px]"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform group-hover:bg-zinc-700">
+                          <PlusCircle className="w-6 h-6 text-zinc-500" />
+                        </div>
+                        <p className="text-zinc-500 font-medium text-sm group-hover:text-zinc-300 transition-colors">{t.addLink}</p>
+                        <p className="text-[10px] text-zinc-700 mt-1 uppercase tracking-widest">{t.quickSave}</p>
+                      </motion.button>
+                    )}
                   </motion.div>
                 ) : (
                   <motion.div
@@ -467,7 +511,7 @@ export default function App() {
                       onClick={() => setIsModalOpen(true)}
                       className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-bold text-sm shadow-lg shadow-indigo-600/20"
                     >
-                      {t.createLink}
+                      {isViewingTrash ? (language === 'zh' ? '返回主页' : 'Go Back') : t.createLink}
                     </button>
                   </motion.div>
                 )}

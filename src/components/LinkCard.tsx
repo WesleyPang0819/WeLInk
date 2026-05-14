@@ -1,5 +1,5 @@
 import { LinkEntry } from '../types';
-import { ExternalLink, Edit2, Trash2 } from 'lucide-react';
+import { ExternalLink, Edit2, Trash2, RotateCcw } from 'lucide-react';
 import { motion } from 'motion/react';
 import React from 'react';
 import { Language } from '../i18n';
@@ -10,9 +10,11 @@ export interface LinkCardProps {
   onEdit: (link: LinkEntry) => void;
   onDelete: (id: string) => void;
   language: Language;
+  isTrashMode?: boolean;
+  onRestore?: (id: string) => void;
 }
 
-export const LinkCard: React.FC<LinkCardProps> = ({ link, folderName, onEdit, onDelete, language }) => {
+export const LinkCard: React.FC<LinkCardProps> = ({ link, folderName, onEdit, onDelete, language, isTrashMode, onRestore }) => {
   const formattedDate = new Date(link.created_at).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', {
     year: 'numeric',
     month: 'short',
@@ -39,18 +41,39 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, folderName, onEdit, on
            </span>
         )}
         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
-          <button
-            onClick={() => onEdit(link)}
-            className="p-1.5 hover:bg-zinc-800 rounded-md text-zinc-400 hover:text-indigo-400 transition-colors"
-          >
-            <Edit2 size={14} />
-          </button>
-          <button
-            onClick={() => onDelete(link.id)}
-            className="p-1.5 hover:bg-zinc-800 rounded-md text-zinc-400 hover:text-red-400 transition-colors"
-          >
-            <Trash2 size={14} />
-          </button>
+          {isTrashMode ? (
+            <>
+              <button
+                onClick={() => onRestore && onRestore(link.id)}
+                className="p-1.5 hover:bg-zinc-800 rounded-md text-emerald-400 hover:text-emerald-300 transition-colors"
+                title="Restore"
+              >
+                <RotateCcw size={14} />
+              </button>
+              <button
+                onClick={() => onDelete(link.id)}
+                className="p-1.5 hover:bg-zinc-800 rounded-md text-red-500 hover:text-red-400 transition-colors"
+                title="Permanent Delete"
+              >
+                <Trash2 size={14} />
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => onEdit(link)}
+                className="p-1.5 hover:bg-zinc-800 rounded-md text-zinc-400 hover:text-indigo-400 transition-colors"
+              >
+                <Edit2 size={14} />
+              </button>
+              <button
+                onClick={() => onDelete(link.id)}
+                className="p-1.5 hover:bg-zinc-800 rounded-md text-zinc-400 hover:text-red-400 transition-colors"
+              >
+                <Trash2 size={14} />
+              </button>
+            </>
+          )}
         </div>
       </div>
 

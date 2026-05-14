@@ -4,6 +4,7 @@ export interface Folder {
   name: string;
   created_at: string;
   updated_at: string;
+  deleted_at?: string | null;
 }
 
 export interface LinkEntry {
@@ -16,6 +17,7 @@ export interface LinkEntry {
   tag: string | null;
   created_at: string;
   updated_at: string;
+  deleted_at?: string | null;
 }
 
 // Keep a Category type alias for backwards compatibility in UI if needed, 
