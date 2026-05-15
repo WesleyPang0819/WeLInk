@@ -2,6 +2,7 @@ import { LinkEntry } from '../types';
 import { ExternalLink, Edit2, Trash2, RotateCcw } from 'lucide-react';
 import React from 'react';
 import { Language } from '../i18n';
+import { translateDescription } from '../utils/translateDescription';
 
 export interface LinkCardProps {
   link: LinkEntry;
@@ -86,7 +87,7 @@ export const LinkCard: React.FC<LinkCardProps> = ({ link, folderName, onEdit, on
         {link.title}
       </h3>
       <p className="text-sm text-[var(--t-muted)] line-clamp-2 mb-4 leading-relaxed italic">
-        {link.description}
+        {translateDescription(link.description, language)}
       </p>
 
       <div className="flex items-center justify-between mt-auto pt-4 border-t border-[var(--t-border)]">
