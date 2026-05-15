@@ -431,10 +431,9 @@ export default function App() {
                 <div className="w-8 h-8 rounded-full border-2 border-[var(--t-primary)] border-t-transparent animate-spin"></div>
               </div>
             ) : (
-              <AnimatePresence mode="popLayout">
+              <AnimatePresence>
                 {filteredLinks.length > 0 ? (
-                  <motion.div 
-                    layout
+                  <div 
                     className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
                   >
                     {filteredLinks.map((link) => (
@@ -456,8 +455,7 @@ export default function App() {
                     
                     {/* Quick Add Placeholder */}
                     {!isViewingTrash && (
-                      <motion.button
-                        layout
+                      <button
                         onClick={() => setIsModalOpen(true)}
                         className="border-2 border-dashed border-[var(--t-border)] rounded-2xl flex flex-col items-center justify-center p-8 bg-transparent hover:bg-[var(--t-surface-2)] hover:border-[var(--t-accent)] transition-all cursor-pointer group min-h-[160px]"
                       >
@@ -466,9 +464,9 @@ export default function App() {
                         </div>
                         <p className="text-[var(--t-muted)] font-medium text-sm group-hover:text-[var(--t-text)] transition-colors">{t.addLink}</p>
                         <p className="text-[10px] text-[var(--t-faint)] mt-1 uppercase tracking-widest">{t.quickSave}</p>
-                      </motion.button>
+                      </button>
                     )}
-                  </motion.div>
+                  </div>
                 ) : (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
