@@ -8,7 +8,6 @@ import { AuthScreen } from './components/AuthScreen';
 import { useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
 import { Plus, Vault, PlusCircle, Trash2, History, Menu, X as CloseIcon, Settings } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { Language, translations } from './i18n';
 import HistoryModal from './components/HistoryModal';
 import { exportVault, importVault } from './utils/backup';
@@ -431,7 +430,7 @@ export default function App() {
                 <div className="w-8 h-8 rounded-full border-2 border-[var(--t-primary)] border-t-transparent animate-spin"></div>
               </div>
             ) : (
-              <AnimatePresence>
+              <>
                 {filteredLinks.length > 0 ? (
                   <div 
                     className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
@@ -468,9 +467,7 @@ export default function App() {
                     )}
                   </div>
                 ) : (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                  <div
                     className="flex flex-col items-center justify-center py-20 text-center"
                   >
                     <div className="w-20 h-20 rounded-full bg-[var(--t-surface-2)] flex items-center justify-center mb-6 border border-[var(--t-border)]">
@@ -486,9 +483,9 @@ export default function App() {
                     >
                       {isViewingTrash ? (language === 'zh' ? '返回主页' : 'Go Back') : t.createLink}
                     </button>
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
+              </>
             )}
           </div>
         </main>
@@ -521,74 +518,58 @@ export default function App() {
       />
 
       {/* Delete Confirmation Modal */}
-      <AnimatePresence>
-        {deleteConfirmation && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setDeleteConfirmation(null)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[200]"
-            />
-            <div className="fixed inset-0 flex items-center justify-center p-4 z-[210] pointer-events-none">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-[var(--t-modal)] border border-[var(--t-border)] w-full max-w-sm rounded-3xl p-8 pointer-events-auto shadow-2xl"
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
-                    <Trash2 className="text-red-500" size={32} />
-                  </div>
-                  <h3 className="text-xl font-bold text-[var(--t-text)] mb-2">{t.confirmDelete}</h3>
-                  <div className="flex gap-4 w-full mt-6">
-                    <button
-                      onClick={() => setDeleteConfirmation(null)}
-                      className="flex-1 px-6 py-3 bg-[var(--t-surface-2)] hover:bg-[var(--t-border)] text-[var(--t-text)] rounded-xl font-bold text-sm transition-all"
-                    >
-                      {t.cancelBtn}
-                    </button>
-                    <button
-                      onClick={() => deleteConfirmation && handleDeleteLink(deleteConfirmation)}
-                      className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-600/20 transition-all"
-                    >
-                      {t.deleteBtn}
-                    </button>
-                  </div>
+      {deleteConfirmation && (
+        <>
+          <div
+            onClick={() => setDeleteConfirmation(null)}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[200]"
+          />
+          <div className="fixed inset-0 flex items-center justify-center p-4 z-[210] pointer-events-none">
+            <div
+              className="bg-[var(--t-modal)] border border-[var(--t-border)] w-full max-w-sm rounded-3xl p-8 pointer-events-auto shadow-2xl"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
+                  <Trash2 className="text-red-500" size={32} />
                 </div>
-              </motion.div>
+                <h3 className="text-xl font-bold text-[var(--t-text)] mb-2">{t.confirmDelete}</h3>
+                <div className="flex gap-4 w-full mt-6">
+                  <button
+                    onClick={() => setDeleteConfirmation(null)}
+                    className="flex-1 px-6 py-3 bg-[var(--t-surface-2)] hover:bg-[var(--t-border)] text-[var(--t-text)] rounded-xl font-bold text-sm transition-all"
+                  >
+                    {t.cancelBtn}
+                  </button>
+                  <button
+                    onClick={() => deleteConfirmation && handleDeleteLink(deleteConfirmation)}
+                    className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-600/20 transition-all"
+                  >
+                    {t.deleteBtn}
+                  </button>
+                </div>
+              </div>
             </div>
-          </>
-        )}
-      </AnimatePresence>
+          </div>
+        </>
+      )}
 
       {/* Importing Loading State */}
-      <AnimatePresence>
-        {isImporting && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[300]"
-            />
-            <div className="fixed inset-0 flex items-center justify-center p-4 z-[310] pointer-events-none">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-[var(--t-modal)] border border-[var(--t-border)] w-full max-w-sm rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center"
-              >
-                <div className="w-16 h-16 rounded-full border-4 border-[var(--t-primary-subtle)] border-t-[var(--t-primary)] animate-spin mb-6"></div>
-                <h3 className="text-xl font-bold text-[var(--t-text)] mb-2">Importing Vault</h3>
-                <p className="text-[var(--t-muted)] text-sm">Please wait while your links and folders are securely synced to Supabase...</p>
-              </motion.div>
+      {isImporting && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[300]"
+          />
+          <div className="fixed inset-0 flex items-center justify-center p-4 z-[310] pointer-events-none">
+            <div
+              className="bg-[var(--t-modal)] border border-[var(--t-border)] w-full max-w-sm rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center"
+            >
+              <div className="w-16 h-16 rounded-full border-4 border-[var(--t-primary-subtle)] border-t-[var(--t-primary)] animate-spin mb-6"></div>
+              <h3 className="text-xl font-bold text-[var(--t-text)] mb-2">{language === 'zh' ? '正在导入' : 'Importing Vault'}</h3>
+              <p className="text-[var(--t-muted)] text-sm">{language === 'zh' ? '请稍候，正在将您的链接和文件夹安全同步到 Supabase...' : 'Please wait while your links and folders are securely synced to Supabase...'}</p>
             </div>
-          </>
-        )}
-      </AnimatePresence>
+          </div>
+        </>
+      )}
     </div>
   );
 }
