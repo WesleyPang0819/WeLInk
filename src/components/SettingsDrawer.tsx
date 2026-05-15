@@ -38,7 +38,7 @@ export default function SettingsDrawer({
     about: language === 'en' ? 'About / System' : '关于 / 系统',
     syncStatus: language === 'en' ? 'Synced to Supabase' : '已同步到 Supabase',
     security: language === 'en' ? 'RLS Secured' : 'RLS 安全保护',
-    version: 'v1.2.0',
+    version: language === 'en' ? 'App Version' : '应用版本',
   };
 
   return (
@@ -100,7 +100,7 @@ export default function SettingsDrawer({
   );
 }
 
-/* ─── Shared inner content ─────────────────────────────────── */
+/* Shared inner content */
 interface DrawerContentProps {
   t: Record<string, string>;
   language: Language;
@@ -131,8 +131,7 @@ function DrawerContent({ t, language, onLanguageChange, onClose, onExport, onImp
 
       {/* Scrollable body */}
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8">
-
-        {/* ── Appearance ── */}
+        {/* Appearance */}
         <Section icon={<Palette size={15} />} title={t.appearance}>
           <label className="text-[11px] uppercase tracking-widest font-bold text-[var(--t-faint)] mb-2 block">
             {t.theme}
@@ -140,7 +139,7 @@ function DrawerContent({ t, language, onLanguageChange, onClose, onExport, onImp
           <ThemeSwitcher language={language} />
         </Section>
 
-        {/* ── Language ── */}
+        {/* Language */}
         <Section icon={<Globe size={15} />} title={t.languageLabel}>
           <div className="flex gap-2">
             <LangButton active={language === 'en'} onClick={() => onLanguageChange('en')} label="English" />
@@ -148,7 +147,7 @@ function DrawerContent({ t, language, onLanguageChange, onClose, onExport, onImp
           </div>
         </Section>
 
-        {/* ── Data ── */}
+        {/* Data */}
         <Section icon={<Database size={15} />} title={t.data}>
           <div className="flex flex-col gap-2">
             <button
@@ -166,7 +165,7 @@ function DrawerContent({ t, language, onLanguageChange, onClose, onExport, onImp
           </div>
         </Section>
 
-        {/* ── Account ── */}
+        {/* Account */}
         <Section icon={<User size={15} />} title={t.account}>
           {userEmail && (
             <div className="mb-3 px-4 py-3 rounded-xl bg-[var(--t-surface-2)] border border-[var(--t-border)]">
@@ -183,7 +182,7 @@ function DrawerContent({ t, language, onLanguageChange, onClose, onExport, onImp
           </button>
         </Section>
 
-        {/* ── About / System ── */}
+        {/* About / System */}
         <Section icon={<Info size={15} />} title={t.about}>
           <div className="space-y-2">
             <StatusRow>
@@ -195,7 +194,7 @@ function DrawerContent({ t, language, onLanguageChange, onClose, onExport, onImp
               <span className="text-[var(--t-muted)]">{t.security}</span>
             </StatusRow>
             <StatusRow>
-              <span className="text-[var(--t-faint)] font-mono">{t.version} — WeLink</span>
+              <span className="text-[var(--t-faint)] font-mono">{t.version}: v{__APP_VERSION__}</span>
             </StatusRow>
           </div>
         </Section>
@@ -204,8 +203,7 @@ function DrawerContent({ t, language, onLanguageChange, onClose, onExport, onImp
   );
 }
 
-/* ─── Small sub-components ─────────────────────────────────── */
-
+/* Small sub-components */
 function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
     <section>
