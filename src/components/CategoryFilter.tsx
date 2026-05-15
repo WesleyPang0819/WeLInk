@@ -27,18 +27,18 @@ export default function CategoryFilter({ selectedCategory, onSelectCategory, lan
           key={category}
           onClick={() => onSelectCategory(category)}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all relative group ${
-            selectedCategory === category 
-              ? 'bg-zinc-800/60 text-indigo-400 shadow-sm' 
-              : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+            selectedCategory === category
+              ? 'bg-[var(--t-surface-2)] text-[var(--t-accent)] shadow-sm'
+              : 'text-[var(--t-muted)] hover:bg-[var(--t-surface-2)] hover:text-[var(--t-text)]'
           }`}
         >
-          <div className={`w-1.5 h-1.5 rounded-full ${DOT_COLORS[category]}`}></div> 
+          <div className={`w-1.5 h-1.5 rounded-full ${DOT_COLORS[category]}`}></div>
           {getCategoryName(category, language)}
-          
+
           {selectedCategory === category && (
             <motion.div
               layoutId="active-nav"
-              className="absolute left-0 w-0.5 h-4 bg-indigo-500 rounded-full"
+              className="absolute left-0 w-0.5 h-4 bg-[var(--t-primary)] rounded-full"
               initial={{ scaleY: 0 }}
               animate={{ scaleY: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}

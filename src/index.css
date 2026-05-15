@@ -6,29 +6,142 @@
   --font-mono: "JetBrains Mono", monospace;
 }
 
+/* ─── Theme Variables ────────────────────────────────────────
+   All components read from these variables.
+   Add a new theme by creating a [data-theme="name"] block below
+   and registering it in ThemeContext.tsx + ThemeSwitcher.tsx.
+────────────────────────────────────────────────────────────── */
+
+:root,
+[data-theme="dark-tech"] {
+  --t-bg:             #09090b;
+  --t-surface:        #09090b;
+  --t-surface-2:      #18181b;
+  --t-card:           rgba(24, 24, 27, 0.4);
+  --t-card-hover:     rgba(24, 24, 27, 0.7);
+  --t-modal:          #18181b;
+  --t-input:          #09090b;
+  --t-text:           #f4f4f5;
+  --t-muted:          #a1a1aa;
+  --t-faint:          #52525b;
+  --t-border:         #3f3f46;
+  --t-border-subtle:  rgba(63, 63, 70, 0.5);
+  --t-primary:        #4f46e5;
+  --t-primary-hover:  #6366f1;
+  --t-primary-subtle: rgba(99, 102, 241, 0.12);
+  --t-accent:         #818cf8;
+  --t-glow:           rgba(79, 70, 229, 0.3);
+  --t-selection:      rgba(99, 102, 241, 0.3);
+}
+
+[data-theme="cream"] {
+  --t-bg:             #faf7f2;
+  --t-surface:        #f5f0e8;
+  --t-surface-2:      #ede5d4;
+  --t-card:           #fdfaf5;
+  --t-card-hover:     #f5ede0;
+  --t-modal:          #faf7f2;
+  --t-input:          #f5f0e8;
+  --t-text:           #231c0f;
+  --t-muted:          #78614a;
+  --t-faint:          #b8a890;
+  --t-border:         #ddd0bc;
+  --t-border-subtle:  rgba(190, 170, 140, 0.5);
+  --t-primary:        #8b6914;
+  --t-primary-hover:  #a07c1a;
+  --t-primary-subtle: rgba(139, 105, 20, 0.12);
+  --t-accent:         #8b6914;
+  --t-glow:           rgba(139, 105, 20, 0.2);
+  --t-selection:      rgba(139, 105, 20, 0.2);
+}
+
+[data-theme="cute"] {
+  --t-bg:             #fdf0f8;
+  --t-surface:        #fce4f2;
+  --t-surface-2:      #f8d0e8;
+  --t-card:           #fff5fb;
+  --t-card-hover:     #fce0f2;
+  --t-modal:          #fdf0f8;
+  --t-input:          #fce4f2;
+  --t-text:           #3d1a2e;
+  --t-muted:          #a05070;
+  --t-faint:          #d090b0;
+  --t-border:         #f0b8d8;
+  --t-border-subtle:  rgba(230, 160, 200, 0.5);
+  --t-primary:        #d4479e;
+  --t-primary-hover:  #e060aa;
+  --t-primary-subtle: rgba(212, 71, 158, 0.12);
+  --t-accent:         #d4479e;
+  --t-glow:           rgba(212, 71, 158, 0.25);
+  --t-selection:      rgba(212, 71, 158, 0.2);
+}
+
+[data-theme="minimal"] {
+  --t-bg:             #ffffff;
+  --t-surface:        #f9fafb;
+  --t-surface-2:      #f3f4f6;
+  --t-card:           #ffffff;
+  --t-card-hover:     #f3f4f6;
+  --t-modal:          #ffffff;
+  --t-input:          #f9fafb;
+  --t-text:           #111827;
+  --t-muted:          #6b7280;
+  --t-faint:          #9ca3af;
+  --t-border:         #e5e7eb;
+  --t-border-subtle:  rgba(229, 231, 235, 0.8);
+  --t-primary:        #111827;
+  --t-primary-hover:  #374151;
+  --t-primary-subtle: rgba(17, 24, 39, 0.07);
+  --t-accent:         #374151;
+  --t-glow:           rgba(0, 0, 0, 0.08);
+  --t-selection:      rgba(17, 24, 39, 0.12);
+}
+
+[data-theme="cyber-blue"] {
+  --t-bg:             #020b18;
+  --t-surface:        #021020;
+  --t-surface-2:      #031828;
+  --t-card:           rgba(3, 20, 45, 0.7);
+  --t-card-hover:     rgba(5, 28, 60, 0.9);
+  --t-modal:          #021428;
+  --t-input:          #020d20;
+  --t-text:           #cce8ff;
+  --t-muted:          #5090b8;
+  --t-faint:          #2a5070;
+  --t-border:         #0a3060;
+  --t-border-subtle:  rgba(10, 48, 96, 0.6);
+  --t-primary:        #0088dd;
+  --t-primary-hover:  #00aaff;
+  --t-primary-subtle: rgba(0, 136, 221, 0.15);
+  --t-accent:         #00bbff;
+  --t-glow:           rgba(0, 170, 255, 0.3);
+  --t-selection:      rgba(0, 136, 221, 0.25);
+}
+
 @layer base {
   body {
-    @apply bg-[#09090b] text-zinc-100 antialiased selection:bg-indigo-500/30 overflow-hidden;
+    background-color: var(--t-bg);
+    color: var(--t-text);
+    @apply antialiased overflow-hidden;
     margin: 0;
     height: 100vh;
+  }
+
+  ::selection {
+    background-color: var(--t-selection);
   }
 }
 
 @layer components {
-  .glass-header {
-    @apply h-16 border-b border-zinc-800/50 bg-zinc-900/40 backdrop-blur-md;
-  }
-
-  .sidebar-aside {
-    @apply w-64 border-r border-zinc-800/50 bg-zinc-950;
-  }
-
-  .theme-card {
-    @apply bg-zinc-900/40 border border-zinc-800 rounded-2xl hover:border-indigo-500/50 hover:bg-zinc-900/60 transition-all shadow-xl;
-  }
-  
-  .glow-indigo {
-    @apply absolute w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none;
+  .glow-primary {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background-color: var(--t-primary);
+    opacity: 0.08;
+    border-radius: 9999px;
+    filter: blur(120px);
+    pointer-events: none;
   }
 }
 

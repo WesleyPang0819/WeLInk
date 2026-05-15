@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Folder } from '../types';
-import { Folder as FolderIcon, Plus, Trash2, MoreVertical, Edit2 } from 'lucide-react';
+import { Folder as FolderIcon, Plus, Trash2, Edit2 } from 'lucide-react';
 
 interface FolderSidebarProps {
   folders: Folder[];
@@ -32,7 +32,6 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
     allLinks: language === 'en' ? 'All Links' : '所有链接',
     newFolder: language === 'en' ? 'New Folder' : '新建文件夹',
     enterName: language === 'en' ? 'Folder name...' : '文件夹名称...',
-    trash: language === 'en' ? 'Trash' : '回收站',
   };
 
   const handleCreateSubmit = (e: React.FormEvent) => {
@@ -58,11 +57,11 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
         onClick={() => onSelectFolder(null)}
         className={`flex items-center gap-3 w-full p-2.5 rounded-xl transition-all text-sm font-medium ${
           selectedFolderId === null && !isViewingTrash
-            ? 'bg-indigo-500/10 text-indigo-400 font-bold'
-            : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'
+            ? 'bg-[var(--t-primary-subtle)] text-[var(--t-accent)] font-bold'
+            : 'text-[var(--t-muted)] hover:bg-[var(--t-surface-2)] hover:text-[var(--t-text)]'
         }`}
       >
-        <FolderIcon size={16} className={selectedFolderId === null ? 'text-indigo-400' : ''} />
+        <FolderIcon size={16} className={selectedFolderId === null && !isViewingTrash ? 'text-[var(--t-accent)]' : ''} />
         {t.allLinks}
       </button>
 
@@ -76,7 +75,7 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
                 onBlur={() => setEditingId(null)}
-                className="w-full bg-zinc-800 text-white text-sm px-2 py-1 rounded border border-indigo-500 outline-none"
+                className="w-full bg-[var(--t-input)] text-[var(--t-text)] text-sm px-2 py-1 rounded border border-[var(--t-accent)] outline-none"
               />
             </form>
           ) : (
@@ -84,26 +83,25 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
               onClick={() => onSelectFolder(folder.id)}
               className={`flex items-center gap-3 w-full p-2.5 rounded-xl transition-all text-sm font-medium ${
                 selectedFolderId === folder.id && !isViewingTrash
-                  ? 'bg-indigo-500/10 text-indigo-400 font-bold'
-                  : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'
+                  ? 'bg-[var(--t-primary-subtle)] text-[var(--t-accent)] font-bold'
+                  : 'text-[var(--t-muted)] hover:bg-[var(--t-surface-2)] hover:text-[var(--t-text)]'
               }`}
             >
-              <FolderIcon size={16} className={selectedFolderId === folder.id ? 'text-indigo-400' : ''} />
+              <FolderIcon size={16} className={selectedFolderId === folder.id && !isViewingTrash ? 'text-[var(--t-accent)]' : ''} />
               <span className="truncate">{folder.name}</span>
             </button>
           )}
 
-          {/* Actions */}
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={(e) => { e.stopPropagation(); setEditName(folder.name); setEditingId(folder.id); }}
-              className="p-1.5 text-zinc-500 hover:text-indigo-400 hover:bg-zinc-800 rounded-md transition-colors"
+              className="p-1.5 text-[var(--t-faint)] hover:text-[var(--t-accent)] hover:bg-[var(--t-surface-2)] rounded-md transition-colors"
             >
               <Edit2 size={12} />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onDeleteFolder(folder.id); }}
-              className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-zinc-800 rounded-md transition-colors"
+              className="p-1.5 text-[var(--t-faint)] hover:text-red-400 hover:bg-[var(--t-surface-2)] rounded-md transition-colors"
             >
               <Trash2 size={12} />
             </button>
@@ -120,15 +118,15 @@ export const FolderSidebar: React.FC<FolderSidebarProps> = ({
             onChange={(e) => setNewFolderName(e.target.value)}
             onBlur={() => setIsCreating(false)}
             placeholder={t.enterName}
-            className="w-full bg-zinc-800 text-white text-sm px-3 py-2 rounded-lg border border-zinc-700 outline-none focus:border-indigo-500 transition-colors"
+            className="w-full bg-[var(--t-input)] text-[var(--t-text)] text-sm px-3 py-2 rounded-lg border border-[var(--t-border)] outline-none focus:border-[var(--t-accent)] transition-colors placeholder:text-[var(--t-faint)]"
           />
         </form>
       ) : (
         <button
           onClick={() => setIsCreating(true)}
-          className="flex items-center gap-2 mt-2 px-3 py-2 text-sm text-zinc-500 hover:text-indigo-400 transition-colors group"
+          className="flex items-center gap-2 mt-2 px-3 py-2 text-sm text-[var(--t-faint)] hover:text-[var(--t-accent)] transition-colors group"
         >
-          <div className="w-5 h-5 rounded flex items-center justify-center bg-zinc-800/50 group-hover:bg-indigo-500/10 transition-colors">
+          <div className="w-5 h-5 rounded flex items-center justify-center bg-[var(--t-surface-2)] group-hover:bg-[var(--t-primary-subtle)] transition-colors">
             <Plus size={12} />
           </div>
           {t.newFolder}

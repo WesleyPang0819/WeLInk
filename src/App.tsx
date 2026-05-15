@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Language, translations } from './i18n';
 import HistoryModal from './components/HistoryModal';
 import { exportVault, importVault } from './utils/backup';
+import ThemeSwitcher from './components/ThemeSwitcher';
 
 const LANG_KEY = 'link_vault_lang';
 
@@ -243,7 +244,7 @@ export default function App() {
   return (
     <div className="h-screen w-full flex flex-col overflow-hidden text-zinc-100 font-sans">
       {/* Top Navigation Bar */}
-      <header className="h-16 border-b border-zinc-800/50 bg-zinc-950 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md">
+      <header className="h-16 border-b border-[var(--t-border-subtle)] bg-[var(--t-surface)] px-4 sm:px-8 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
@@ -256,7 +257,7 @@ export default function App() {
             alt="WeLink Logo" 
             className="w-10 h-10 md:w-11 md:h-11 rounded-lg shadow-lg shadow-indigo-600/20 object-contain" 
           />
-          <h1 className="text-xl font-bold tracking-tight text-white font-display hidden lg:block">
+          <h1 className="text-xl font-bold tracking-tight text-[var(--t-text)] font-display hidden lg:block">
             Link<span className="text-indigo-400">{t.title}</span>
           </h1>
         </div>
@@ -273,21 +274,21 @@ export default function App() {
               }}
               className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full transition-all ${
                 isViewingTrash 
-                  ? 'bg-indigo-600 text-white shadow-[0_0_15px_rgba(79,70,229,0.5)]' 
-                  : 'bg-zinc-950/50 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+                  ? 'bg-[var(--t-primary)] text-white shadow-[0_0_15px_var(--t-glow)]'
+                  : 'bg-[var(--t-surface)] border border-[var(--t-border)] text-[var(--t-muted)] hover:text-[var(--t-text)] hover:bg-[var(--t-surface-2)]'
               }`}
               title={language === 'en' ? 'History' : '历史记录'}
             >
               <History size={16} />
             </button>
             
-            <div className="flex items-center bg-zinc-950/50 border border-zinc-800 rounded-full p-1 h-8 sm:h-9">
+            <div className="flex items-center bg-[var(--t-surface)] border border-[var(--t-border)] rounded-full p-1 h-8 sm:h-9">
             <button
               onClick={() => setLanguage('en')}
               className={`px-2 sm:px-3 h-full flex items-center text-[9px] sm:text-[10px] font-bold uppercase tracking-widest rounded-full transition-all ${
                 language === 'en' 
-                  ? 'bg-zinc-800 text-white shadow-lg' 
-                  : 'text-zinc-500 hover:text-zinc-400'
+                  ? 'bg-[var(--t-surface-2)] text-[var(--t-text)] shadow-lg'
+                  : 'text-[var(--t-faint)] hover:text-[var(--t-muted)]'
               }`}
             >
               EN
@@ -296,8 +297,8 @@ export default function App() {
               onClick={() => setLanguage('zh')}
               className={`px-2 sm:px-3 h-full flex items-center text-[9px] sm:text-[10px] font-bold uppercase tracking-widest rounded-full transition-all ${
                 language === 'zh' 
-                  ? 'bg-zinc-800 text-white shadow-lg' 
-                  : 'text-zinc-500 hover:text-zinc-400'
+                  ? 'bg-[var(--t-surface-2)] text-[var(--t-text)] shadow-lg'
+                  : 'text-[var(--t-faint)] hover:text-[var(--t-muted)]'
               }`}
             >
               中文
@@ -323,7 +324,7 @@ export default function App() {
 
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold px-3 sm:px-5 h-8 sm:h-10 rounded-full shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap"
+            className="bg-[var(--t-primary)] hover:bg-[var(--t-primary-hover)] text-white text-xs sm:text-sm font-bold px-3 sm:px-5 h-8 sm:h-10 rounded-full shadow-[0_0_20px_var(--t-glow)] transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap"
           >
             <Plus size={16} />
             <span className="hidden sm:inline">{t.newLink}</span>
@@ -331,7 +332,7 @@ export default function App() {
 
           <button
             onClick={() => signOut()}
-            className="hidden md:flex p-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+            className="hidden md:flex p-2 rounded-lg text-[var(--t-muted)] hover:text-red-400 hover:bg-red-400/10 transition-colors"
             title="Sign Out"
           >
             <LogOut size={18} />
@@ -340,7 +341,7 @@ export default function App() {
       </header>
 
       {/* Mobile Search Bar (Only visible on small screens) */}
-      <div className="p-4 md:hidden border-b border-zinc-800/30 bg-zinc-950/50">
+      <div className="p-4 md:hidden border-b border-[var(--t-border-subtle)] bg-[var(--t-surface)]">
         <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} placeholder={t.searchPlaceholder} />
       </div>
 
@@ -354,7 +355,7 @@ export default function App() {
         {/* Mobile Sidebar */}
         <aside
           style={{ willChange: 'transform', transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(-100%)' }}
-          className="lg:hidden fixed inset-y-0 left-0 w-72 bg-zinc-950 border-r border-zinc-800 z-[110] p-6 flex flex-col gap-8 transition-transform duration-200 ease-out"
+          className="lg:hidden fixed inset-y-0 left-0 w-72 bg-[var(--t-surface)] border-r border-[var(--t-border)] z-[110] p-6 flex flex-col gap-8 transition-transform duration-200 ease-out"
         >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
@@ -363,17 +364,17 @@ export default function App() {
                     alt="WeLink Logo" 
                     className="w-10 h-10 md:w-11 md:h-11 rounded-lg object-contain" 
                   />
-                  <h1 className="text-xl font-bold tracking-tight text-white font-display">
-                    Link<span className="text-indigo-400">{t.title}</span>
+                  <h1 className="text-xl font-bold tracking-tight text-[var(--t-text)] font-display">
+                    Link<span className="text-[var(--t-accent)]">{t.title}</span>
                   </h1>
                 </div>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-zinc-500">
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-[var(--t-muted)]">
                   <CloseIcon size={20} />
                 </button>
               </div>
 
               <div>
-                <h3 className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-4 px-2">Folders</h3>
+                <h3 className="text-[10px] uppercase tracking-widest text-[var(--t-faint)] font-bold mb-4 px-2">Folders</h3>
                 <FolderSidebar
                   folders={activeFolders}
                   selectedFolderId={selectedFolderId}
@@ -386,23 +387,26 @@ export default function App() {
                 />
               </div>
 
-              <div className="mt-auto pt-4 border-t border-zinc-800 flex flex-col gap-1">
-                <h3 className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-2 px-2">{t.settings}</h3>
+              <div className="mt-auto pt-4 border-t border-[var(--t-border)] flex flex-col gap-1">
+                <h3 className="text-[10px] uppercase tracking-widest text-[var(--t-faint)] font-bold mb-2 px-2">{t.settings}</h3>
+                <div className="mb-3">
+                  <ThemeSwitcher language={language} />
+                </div>
                 <button
                   onClick={() => { handleExport(); setIsMobileMenuOpen(false); }}
-                  className="flex items-center gap-3 px-2 py-2 rounded-lg text-zinc-400 hover:text-indigo-400 hover:bg-indigo-400/10 transition-colors text-sm"
+                  className="flex items-center gap-3 px-2 py-2 rounded-lg text-[var(--t-muted)] hover:text-[var(--t-accent)] hover:bg-[var(--t-primary-subtle)] transition-colors text-sm"
                 >
                   <Download size={16} />
                   {t.exportBtn}
                 </button>
-                <label className="flex items-center gap-3 px-2 py-2 rounded-lg text-zinc-400 hover:text-emerald-400 hover:bg-emerald-400/10 transition-colors text-sm cursor-pointer">
+                <label className="flex items-center gap-3 px-2 py-2 rounded-lg text-[var(--t-muted)] hover:text-emerald-400 hover:bg-emerald-400/10 transition-colors text-sm cursor-pointer">
                   <Upload size={16} />
                   {t.importBtn}
                   <input type="file" accept=".json" onChange={(e) => { handleImport(e); setIsMobileMenuOpen(false); }} className="hidden" />
                 </label>
                 <button
                   onClick={() => { signOut(); setIsMobileMenuOpen(false); }}
-                  className="flex items-center gap-3 px-2 py-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-400/10 transition-colors text-sm"
+                  className="flex items-center gap-3 px-2 py-2 rounded-lg text-[var(--t-muted)] hover:text-red-400 hover:bg-red-400/10 transition-colors text-sm"
                 >
                   <LogOut size={16} />
                   {language === 'en' ? 'Sign Out' : '退出登录'}
@@ -411,9 +415,9 @@ export default function App() {
         </aside>
 
         {/* Sidebar Navigation (Desktop) */}
-        <aside className="hidden lg:flex w-64 border-r border-zinc-800/50 bg-zinc-950 p-6 flex-col gap-8 shrink-0 overflow-y-auto custom-scrollbar">
+        <aside className="hidden lg:flex w-64 border-r border-[var(--t-border-subtle)] bg-[var(--t-surface)] p-6 flex-col gap-8 shrink-0 overflow-y-auto custom-scrollbar">
           <div>
-            <h3 className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-4 px-2">Folders</h3>
+            <h3 className="text-[10px] uppercase tracking-widest text-[var(--t-faint)] font-bold mb-4 px-2">Folders</h3>
             <FolderSidebar
               folders={activeFolders}
               selectedFolderId={selectedFolderId}
@@ -426,13 +430,18 @@ export default function App() {
             />
           </div>
 
+          <div>
+            <h3 className="text-[10px] uppercase tracking-widest text-[var(--t-faint)] font-bold mb-3 px-2">{language === 'zh' ? '主题' : 'Theme'}</h3>
+            <ThemeSwitcher language={language} />
+          </div>
+
           <div className="mt-auto">
-            <div className="p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800/50 ring-1 ring-zinc-800/50">
-              <div className="flex items-center gap-2 text-indigo-300 font-medium text-xs mb-1">
+            <div className="p-4 rounded-2xl bg-[var(--t-card)] border border-[var(--t-border)] ring-1 ring-[var(--t-border)]">
+              <div className="flex items-center gap-2 text-[var(--t-accent)] font-medium text-xs mb-1">
                 <Shield size={12} />
                 {t.proTip}
               </div>
-              <p className="text-[11px] text-zinc-400 leading-relaxed">
+              <p className="text-[11px] text-[var(--t-muted)] leading-relaxed">
                 {t.proTipDesc}
               </p>
             </div>
@@ -440,23 +449,23 @@ export default function App() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-[#09090b] relative p-4 sm:p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-[var(--t-bg)] relative p-4 sm:p-8 custom-scrollbar">
           {/* Subtle background glow */}
-          <div className="glow-indigo top-[-100px] right-[-100px]" />
+          <div className="glow-primary top-[-100px] right-[-100px]" />
           
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 relative">
             <div>
-              <h2 className="text-2xl font-bold text-white mb-1">
+              <h2 className="text-2xl font-bold text-[var(--t-text)] mb-1">
                 {isViewingTrash 
                   ? (language === 'zh' ? '历史记录' : 'History')
                   : selectedFolderId 
                     ? folders.find(f => f.id === selectedFolderId)?.name || 'Folder'
                     : t.savedResources}
               </h2>
-              <p className="text-sm text-zinc-500">{t.manageResources}</p>
+              <p className="text-sm text-[var(--t-muted)]">{t.manageResources}</p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] uppercase tracking-widest font-bold bg-zinc-800 text-zinc-400 py-1.5 px-3 rounded-full border border-zinc-700">
+              <span className="text-[10px] uppercase tracking-widest font-bold bg-[var(--t-surface-2)] text-[var(--t-muted)] py-1.5 px-3 rounded-full border border-[var(--t-border)]">
                 {filteredLinks.length} {t.results}
               </span>
             </div>
@@ -466,7 +475,7 @@ export default function App() {
           <div className="relative">
             {loadingData ? (
               <div className="flex justify-center py-20">
-                <div className="w-8 h-8 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
+                <div className="w-8 h-8 rounded-full border-2 border-[var(--t-primary)] border-t-transparent animate-spin"></div>
               </div>
             ) : (
               <AnimatePresence mode="popLayout">
@@ -497,13 +506,13 @@ export default function App() {
                       <motion.button
                         layout
                         onClick={() => setIsModalOpen(true)}
-                        className="border-2 border-dashed border-zinc-800 rounded-2xl flex flex-col items-center justify-center p-8 bg-zinc-900/10 hover:bg-zinc-900/20 hover:border-zinc-700 transition-all cursor-pointer group min-h-[160px]"
+                        className="border-2 border-dashed border-[var(--t-border)] rounded-2xl flex flex-col items-center justify-center p-8 bg-transparent hover:bg-[var(--t-surface-2)] hover:border-[var(--t-accent)] transition-all cursor-pointer group min-h-[160px]"
                       >
-                        <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform group-hover:bg-zinc-700">
-                          <PlusCircle className="w-6 h-6 text-zinc-500" />
+                        <div className="w-10 h-10 rounded-full bg-[var(--t-surface-2)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform group-hover:bg-[var(--t-border)]">
+                          <PlusCircle className="w-6 h-6 text-[var(--t-muted)]" />
                         </div>
-                        <p className="text-zinc-500 font-medium text-sm group-hover:text-zinc-300 transition-colors">{t.addLink}</p>
-                        <p className="text-[10px] text-zinc-700 mt-1 uppercase tracking-widest">{t.quickSave}</p>
+                        <p className="text-[var(--t-muted)] font-medium text-sm group-hover:text-[var(--t-text)] transition-colors">{t.addLink}</p>
+                        <p className="text-[10px] text-[var(--t-faint)] mt-1 uppercase tracking-widest">{t.quickSave}</p>
                       </motion.button>
                     )}
                   </motion.div>
@@ -513,16 +522,16 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     className="flex flex-col items-center justify-center py-20 text-center"
                   >
-                    <div className="w-20 h-20 rounded-full bg-zinc-900/50 flex items-center justify-center mb-6 border border-zinc-800">
-                      <Vault className="text-zinc-700" size={32} />
+                    <div className="w-20 h-20 rounded-full bg-[var(--t-surface-2)] flex items-center justify-center mb-6 border border-[var(--t-border)]">
+                      <Vault className="text-[var(--t-faint)]" size={32} />
                     </div>
-                    <h3 className="text-xl font-bold text-zinc-300 mb-2">{searchQuery ? t.noLinksSearch : t.noLinks}</h3>
-                    <p className="text-zinc-500 text-sm max-w-xs mb-8">
+                    <h3 className="text-xl font-bold text-[var(--t-muted)] mb-2">{searchQuery ? t.noLinksSearch : t.noLinks}</h3>
+                    <p className="text-[var(--t-muted)] text-sm max-w-xs mb-8">
                       {searchQuery ? t.noLinksSearch : t.noLinksSub}
                     </p>
                     <button
                       onClick={() => setIsModalOpen(true)}
-                      className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-bold text-sm shadow-lg shadow-indigo-600/20"
+                      className="px-6 py-2.5 bg-[var(--t-primary)] hover:bg-[var(--t-primary-hover)] text-white rounded-full font-bold text-sm shadow-lg"
                     >
                       {isViewingTrash ? (language === 'zh' ? '返回主页' : 'Go Back') : t.createLink}
                     </button>
@@ -535,19 +544,19 @@ export default function App() {
       </div>
 
       {/* Bottom Status Bar */}
-      <footer className="h-8 border-t border-zinc-800/50 bg-zinc-950 px-6 flex items-center justify-between shrink-0 z-20">
+      <footer className="h-8 border-t border-[var(--t-border-subtle)] bg-[var(--t-surface)] px-6 flex items-center justify-between shrink-0 z-20">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-2 text-[10px] font-bold text-emerald-500 uppercase tracking-tight">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse"></div>
             Synced to Supabase
           </span>
-          <div className="h-3 w-px bg-zinc-800 hidden sm:block"></div>
-          <span className="hidden sm:flex items-center gap-1.5 text-[10px] text-zinc-500 uppercase tracking-widest font-bold">
+          <div className="h-3 w-px bg-[var(--t-border)] hidden sm:block"></div>
+          <span className="hidden sm:flex items-center gap-1.5 text-[10px] text-[var(--t-faint)] uppercase tracking-widest font-bold">
             <Info size={10} />
             RLS Secured
           </span>
         </div>
-        <p className="text-[10px] text-zinc-600 tracking-wider font-mono">v1.2.0 - Link Vault</p>
+        <p className="text-[10px] text-[var(--t-faint)] tracking-wider font-mono">v1.2.0 - Link Vault</p>
       </footer>
 
       {/* Modal */}
@@ -580,17 +589,17 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-3xl p-8 pointer-events-auto shadow-2xl"
+                className="bg-[var(--t-modal)] border border-[var(--t-border)] w-full max-w-sm rounded-3xl p-8 pointer-events-auto shadow-2xl"
               >
                 <div className="flex flex-col items-center text-center">
                   <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
                     <Trash2 className="text-red-500" size={32} />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">{t.confirmDelete}</h3>
+                  <h3 className="text-xl font-bold text-[var(--t-text)] mb-2">{t.confirmDelete}</h3>
                   <div className="flex gap-4 w-full mt-6">
                     <button
                       onClick={() => setDeleteConfirmation(null)}
-                      className="flex-1 px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-bold text-sm transition-all"
+                      className="flex-1 px-6 py-3 bg-[var(--t-surface-2)] hover:bg-[var(--t-border)] text-[var(--t-text)] rounded-xl font-bold text-sm transition-all"
                     >
                       {t.cancelBtn}
                     </button>
@@ -623,11 +632,11 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-zinc-900 border border-zinc-800 w-full max-w-sm rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center"
+                className="bg-[var(--t-modal)] border border-[var(--t-border)] w-full max-w-sm rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center"
               >
-                <div className="w-16 h-16 rounded-full border-4 border-indigo-500/30 border-t-indigo-500 animate-spin mb-6"></div>
-                <h3 className="text-xl font-bold text-white mb-2">Importing Vault</h3>
-                <p className="text-zinc-400 text-sm">Please wait while your links and folders are securely synced to Supabase...</p>
+                <div className="w-16 h-16 rounded-full border-4 border-[var(--t-primary-subtle)] border-t-[var(--t-primary)] animate-spin mb-6"></div>
+                <h3 className="text-xl font-bold text-[var(--t-text)] mb-2">Importing Vault</h3>
+                <p className="text-[var(--t-muted)] text-sm">Please wait while your links and folders are securely synced to Supabase...</p>
               </motion.div>
             </div>
           </>
